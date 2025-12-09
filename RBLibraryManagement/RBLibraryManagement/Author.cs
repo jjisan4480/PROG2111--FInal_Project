@@ -5,12 +5,13 @@
 // FIRST VERSION      : 2025-12-09
 // DESCRIPTION        : This class handles CRUD operations for the Author entity in the library management system.
 //   
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
 
 namespace RBLibraryManagement
 {
@@ -68,9 +69,48 @@ namespace RBLibraryManagement
 
         private void CreateAuthor()
         {
-            Console.WriteLine("Create Author (not implemented)");
+            Console.WriteLine("\n--- Create Author ---");
+
+            Console.Write("Enter first name: ");
+            string first = Console.ReadLine();
+
+            Console.Write("Enter last name: ");
+            string last = Console.ReadLine();
+
+            string connString = "Server=localhost;Port=3306;Uid=root;Pwd=root;Database=Library_Management_System;";
+            MySqlConnection connection = new MySqlConnection(connString);
+
+            try
+            {
+                connection.Open();
+                string query = "SELECT * FROM Author";
+                MySqlDataAdapter adapter = new MySqlDataAdapter(query, connection);
+
+                DataSet ds = new DataSet();
+                adapter.Fill(ds, "Author");
+                DataTable table = ds.Tables["Author"];
+
+                DataRow row = table.NewRow();
+                row["first_name"] = first;
+                row["last_name"] = last;
+
+                table.Rows.Add(row);
+
+                MySqlCommandBuilder builder = new MySqlCommandBuilder(adapter);
+                adapter.Update(ds, "Author");
+
+                Console.WriteLine("Author successfully created.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
         }
-       
+
         private void ReadAuthors()
         {
             Console.WriteLine("\n--- Author List ---");

@@ -5,12 +5,13 @@
 // FIRST VERSION      : 2025-12-09
 // DESCRIPTION        : This class handles CRUD operations for the Librarian entity in the library management system.
 //   
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
 
 namespace RBLibraryManagement
 {
@@ -66,10 +67,55 @@ namespace RBLibraryManagement
             return Console.ReadKey(true).KeyChar;
         }
 
-        private void CreateLibrarian()
+       
+           private void CreateLibrarian()
         {
-            Console.WriteLine("Create Librarian (not implemented)");
+            Console.WriteLine("\n--- Create Librarian ---");
+
+            Console.Write("Enter first name: ");
+            string first = Console.ReadLine();
+
+            Console.Write("Enter last name: ");
+            string last = Console.ReadLine();
+
+            Console.Write("Enter phone number: ");
+            string phone = Console.ReadLine();
+
+            string connString = "Server=localhost;Port=3306;Uid=root;Pwd=root;Database=Library_Management_System;";
+            MySqlConnection connection = new MySqlConnection(connString);
+            try
+            {
+                connection.Open();
+                string query = "SELECT * FROM Librarian";
+                MySqlDataAdapter adapter = new MySqlDataAdapter(query, connection);
+
+                DataSet ds = new DataSet();
+                adapter.Fill(ds, "Librarian");
+                DataTable table = ds.Tables["Librarian"];
+
+                DataRow newRow = table.NewRow();
+                newRow["first_name"] = first;
+                newRow["last_name"] = last;
+                newRow["phone_number"] = phone;
+
+                table.Rows.Add(newRow);
+
+                MySqlCommandBuilder builder = new MySqlCommandBuilder(adapter);
+                adapter.Update(ds, "Librarian");
+
+                Console.WriteLine("Librarian created.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
         }
+
+        
         private void ReadLibrarians()
         {
             Console.WriteLine("\n--- Librarian List ---");

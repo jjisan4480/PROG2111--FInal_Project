@@ -19,6 +19,8 @@ namespace RBLibraryManagement
 {
     internal class Member
     {
+
+       
         public void Run()
         {
             bool stay = true;
@@ -71,7 +73,69 @@ namespace RBLibraryManagement
 
         private void CreateMember()
         {
-         
+            Console.WriteLine("\n--- Create Member ---");
+
+            Console.Write("Enter first name: ");
+            string? first = Console.ReadLine();
+
+            Console.Write("Enter last name: ");
+            string? last = Console.ReadLine();
+
+            Console.Write("Enter email: ");
+            string? email = Console.ReadLine();
+
+            Console.Write("Enter phone: ");
+            string? phone = Console.ReadLine();
+
+            Console.Write("Enter membership date (yyyy-mm-dd): ");
+            string? date = Console.ReadLine();
+
+            string connString = "Server=localhost;Port=3306;Uid=root;Pwd=root;Database=Library_Management_System;";
+            MySqlConnection connection = new MySqlConnection(connString);
+
+            try
+            {
+                connection.Open();
+
+                // 1. Load Member table into DataSet
+                string query = "SELECT * FROM Member";
+                MySqlDataAdapter adapter = new MySqlDataAdapter(query, connection);
+
+                DataSet ds = new DataSet();
+                adapter.Fill(ds, "Member");
+
+                DataTable table = ds.Tables["Member"];
+
+                DataRow newRow = table.NewRow();
+                newRow["first_name"] = first;
+                newRow["last_name"] = last;
+                newRow["email"] = email;
+                newRow["phone"] = phone;
+                newRow["membership_date"] = DateTime.Parse(date);
+
+
+                table.Rows.Add(newRow);
+
+
+                MySqlCommandBuilder builder = new MySqlCommandBuilder(adapter);
+
+
+                adapter.Update(ds, "Member");
+
+                Console.WriteLine("Member successfully created!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            finally
+            {
+                if (connection != null)
+                {
+                    connection.Close();
+                    //Console.WriteLine("Connection closed.");
+                }
+            }
 
         }
         private void ReadMembers()
@@ -105,8 +169,11 @@ namespace RBLibraryManagement
             }
             finally
             {
-                connection.Close();
-                //Console.WriteLine("Connection closed");
+                if (connection != null)
+                {
+                    connection.Close();
+                    //Console.WriteLine("Connection closed.");
+                }
             }
         }
 
