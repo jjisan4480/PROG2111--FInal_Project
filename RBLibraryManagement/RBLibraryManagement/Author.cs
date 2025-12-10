@@ -17,6 +17,8 @@ namespace RBLibraryManagement
 {
     internal class Author
     {
+        string? authFirstName;
+        string? authLastName;
         public void Run()
         {
             bool stay = true;
@@ -71,12 +73,7 @@ namespace RBLibraryManagement
         {
             Console.WriteLine("\n--- Create Author ---");
 
-            Console.Write("Enter first name: ");
-            string? first = Console.ReadLine();
-
-            Console.Write("Enter last name: ");
-            string? last = Console.ReadLine();
-
+            GetInfo();
             string connString = "Server=localhost;Port=3306;Uid=root;Pwd=root;Database=Library_Management_System;";
             MySqlConnection connection = new MySqlConnection(connString);
 
@@ -92,8 +89,8 @@ namespace RBLibraryManagement
                 if (table != null)
                 {
                     DataRow row = table.NewRow();
-                    row["first_name"] = first;
-                    row["last_name"] = last;
+                    row["first_name"] = authFirstName;
+                    row["last_name"] = authLastName;
 
                     table.Rows.Add(row);
                 } else
@@ -155,6 +152,41 @@ namespace RBLibraryManagement
         private void DeleteAuthor()
         {
            Console.WriteLine("Update Author (not implemented)");
+        }
+
+        private void GetInfo()
+        {
+            bool valid = false;
+            while (!valid)
+            {
+                Console.Write("Enter first name: ");
+                string? first = Console.ReadLine();
+                if(!string.IsNullOrWhiteSpace(first) && first.Length < 50 )
+                {
+                    authFirstName = first;
+                    valid = true;
+                }
+                else
+                {
+                    Console.WriteLine("First name cannot be empty. Please try again.");
+                }
+            }
+            valid = false;
+           while(!valid)
+            {
+                Console.Write("Enter last name: ");
+                string? last = Console.ReadLine();
+                if (!string.IsNullOrWhiteSpace(last) && last.Length < 50)
+                {
+                    authLastName = last;
+                    valid = true;
+                }
+                else
+                {
+                    Console.WriteLine("Last name cannot be empty. Please try again.");
+                }
+            }
+         
         }
     }
 }
