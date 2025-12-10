@@ -186,6 +186,37 @@ namespace RBLibraryManagement
                 }
             
         }
-        
+        private void DeleteLibrarian()
+        {
+            Console.WriteLine("\n--- Delete Librarian ---");
+
+            Console.Write("Enter Librarian ID to delete: ");
+            if (!int.TryParse(Console.ReadLine(), out int id)) { Console.WriteLine("Invalid ID"); return; }
+
+            Console.Write("Are you sure? (y/n): ");
+            if (Console.ReadKey().KeyChar != 'y') return;
+
+            using (MySqlConnection connection = new MySqlConnection(MainProgram.ConnectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "DELETE FROM Librarian WHERE librarian_ID = @id";
+
+                    MySqlCommand cmd = new MySqlCommand(query, connection);
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    int rows = cmd.ExecuteNonQuery();
+                    Console.WriteLine();
+
+                    if (rows > 0) Console.WriteLine("Librarian deleted successfully.");
+                    else Console.WriteLine("Librarian ID not found.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("\nError: " + ex.Message);
+                }
+            }
+        }
     }
 }

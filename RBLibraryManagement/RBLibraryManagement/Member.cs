@@ -221,6 +221,38 @@ namespace RBLibraryManagement
                 }
             
         }
-        
+        private void DeleteMember()
+        {
+            Console.WriteLine("\n--- Delete Member ---");
+
+            Console.Write("Enter Member ID to delete: ");
+            if (!int.TryParse(Console.ReadLine(), out int id)) { Console.WriteLine("Invalid ID"); return; }
+
+            Console.Write("Are you sure? (y/n): ");
+            if (Console.ReadKey().KeyChar != 'y') return;
+
+            using (MySqlConnection connection = new MySqlConnection(MainProgram.ConnectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "DELETE FROM Member WHERE member_ID = @id";
+
+                    MySqlCommand cmd = new MySqlCommand(query, connection);
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    int rows = cmd.ExecuteNonQuery();
+                    Console.WriteLine();
+
+                    if (rows > 0) Console.WriteLine("Member deleted successfully.");
+                    else Console.WriteLine("Member ID not found.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("\nError: " + ex.Message);
+                    Console.WriteLine("Note: You cannot delete a member if they have active loans or fines.");
+                }
+            }
+        }
     }
 }

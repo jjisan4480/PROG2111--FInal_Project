@@ -183,7 +183,43 @@ namespace RBLibraryManagement
                 }
             
         }
-      
+        private void DeleteAuthor()
+        {
+            Console.WriteLine("\n--- Delete Author ---");
+
+            Console.Write("Enter Author ID to delete: ");
+            if (!int.TryParse(Console.ReadLine(), out int id))
+            {
+                Console.WriteLine("Invalid ID.");
+                return;
+            }
+
+            Console.Write("Are you sure? (y/n): ");
+            if (Console.ReadKey().KeyChar != 'y') return;
+
+            using (MySqlConnection connection = new MySqlConnection(MainProgram.ConnectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "DELETE FROM Author WHERE author_id = @id";
+
+                    MySqlCommand cmd = new MySqlCommand(query, connection);
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    int rows = cmd.ExecuteNonQuery();
+                    Console.WriteLine(); // New line after ReadKey
+
+                    if (rows > 0) Console.WriteLine("Author deleted successfully.");
+                    else Console.WriteLine("Author ID not found.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("\nError: " + ex.Message);
+                    Console.WriteLine("Note: You cannot delete an author if they still have books in the library.");
+                }
+            }
+        }
 
         private void GetInfo()
         {

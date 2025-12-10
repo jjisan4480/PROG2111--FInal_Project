@@ -213,6 +213,37 @@ namespace RBLibraryManagement
                 }
             
         }
-        
+        private void DeleteBook()
+        {
+            Console.WriteLine("\n--- Delete Book ---");
+
+            Console.Write("Enter Book ID to delete: ");
+            if (!int.TryParse(Console.ReadLine(), out int id)) { Console.WriteLine("Invalid ID"); return; }
+
+            Console.Write("Are you sure? (y/n): ");
+            if (Console.ReadKey().KeyChar != 'y') return;
+
+            using (MySqlConnection connection = new MySqlConnection(MainProgram.ConnectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "DELETE FROM Book WHERE book_ID = @id";
+
+                    MySqlCommand cmd = new MySqlCommand(query, connection);
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    int rows = cmd.ExecuteNonQuery();
+                    Console.WriteLine();
+
+                    if (rows > 0) Console.WriteLine("Book deleted successfully.");
+                    else Console.WriteLine("Book ID not found.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("\nError: " + ex.Message);
+                }
+            }
+        }
     }
 }

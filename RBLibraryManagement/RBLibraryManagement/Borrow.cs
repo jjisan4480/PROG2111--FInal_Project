@@ -203,6 +203,37 @@ namespace RBLibraryManagement
                 }
             
         }
-        
+        private void DeleteBorrow()
+        {
+            Console.WriteLine("\n--- Delete Borrow Record ---");
+
+            Console.Write("Enter Borrow ID to delete: ");
+            if (!int.TryParse(Console.ReadLine(), out int id)) { Console.WriteLine("Invalid ID"); return; }
+
+            Console.Write("Are you sure? (y/n): ");
+            if (Console.ReadKey().KeyChar != 'y') return;
+
+            using (MySqlConnection connection = new MySqlConnection(MainProgram.ConnectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "DELETE FROM Borrow WHERE borrow_ID = @id";
+
+                    MySqlCommand cmd = new MySqlCommand(query, connection);
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    int rows = cmd.ExecuteNonQuery();
+                    Console.WriteLine();
+
+                    if (rows > 0) Console.WriteLine("Borrow record deleted.");
+                    else Console.WriteLine("Borrow ID not found.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("\nError: " + ex.Message);
+                }
+            }
+        }
     }
 }
