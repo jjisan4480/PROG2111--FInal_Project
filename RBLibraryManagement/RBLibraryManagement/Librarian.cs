@@ -1,7 +1,7 @@
 ﻿//
 // FILE               : Librarian.cs
 // PROJECT            : RBLibraryManagement
-// PROGRAMMER		  : Josiah Williams
+// PROGRAMMER		  : Josiah Williams, Jobair Ahmed Jisan
 // FIRST VERSION      : 2025-12-09
 // DESCRIPTION        : This class handles CRUD operations for the Librarian entity in the library management system.
 //   
@@ -70,18 +70,33 @@ namespace RBLibraryManagement
         }
 
        
-           private void CreateLibrarian()
+        private void CreateLibrarian()
         {
             Console.WriteLine("\n--- Create Librarian ---");
 
-            Console.Write("Enter first name: ");
-            string? first = Console.ReadLine() ?? "";
+            string first = "";
+            while (string.IsNullOrWhiteSpace(first))
+            {
+                Console.Write("Enter first name: ");
+                first = Console.ReadLine() ?? "";
+                if (string.IsNullOrWhiteSpace(first)) Console.WriteLine("Name cannot be empty.");
+            }
 
-            Console.Write("Enter last name: ");
-            string? last = Console.ReadLine() ?? "";
+            string last = "";
+            while (string.IsNullOrWhiteSpace(last))
+            {
+                Console.Write("Enter last name: ");
+                last = Console.ReadLine() ?? "";
+                if (string.IsNullOrWhiteSpace(last)) Console.WriteLine("Name cannot be empty.");
+            }
 
-            Console.Write("Enter phone number: ");
-            string? phone = Console.ReadLine() ?? "";
+            string phone = "";
+            while (string.IsNullOrWhiteSpace(phone))
+            {
+                Console.Write("Enter phone number: ");
+                phone = Console.ReadLine() ?? "";
+                if (string.IsNullOrWhiteSpace(phone)) Console.WriteLine("Phone cannot be empty.");
+            }
 
             MySqlConnection connection = new MySqlConnection(MainProgram.ConnectionString);
             try

@@ -1,7 +1,7 @@
 ﻿//
 // FILE               : Book.cs
 // PROJECT            : RBLibraryManagement
-// PROGRAMMER		  : Josiah Williams
+// PROGRAMMER		  : Josiah Williams, Jobair Ahmed Jisan
 // FIRST VERSION      : 2025-12-09
 // DESCRIPTION        : This class handles CRUD operations for the Book entity in the library management system.
 // 
@@ -74,26 +74,63 @@ namespace RBLibraryManagement
         {
             Console.WriteLine("\n--- Create Book ---");
 
-            Console.Write("Enter title: ");
-            string? title = Console.ReadLine();
+            string title = "";
+            while (string.IsNullOrWhiteSpace(title))
+            {
+                Console.Write("Enter title: ");
+                title = Console.ReadLine() ?? "";
+            }
 
-            Console.Write("Enter ISBN (numbers only): ");
-            int isbn = int.Parse(Console.ReadLine() ?? "0");
+            int isbn;
+            while (true)
+            {
+                Console.Write("Enter ISBN (numbers only): ");
+                if (int.TryParse(Console.ReadLine(), out isbn)) break;
+                Console.WriteLine("Invalid input. Please enter a valid number for ISBN.");
+            }
 
-            Console.Write("Enter price: ");
-            decimal price = decimal.Parse(Console.ReadLine() ?? "0");
+            decimal price;
+            while (true)
+            {
+                Console.Write("Enter price: ");
+                if (decimal.TryParse(Console.ReadLine(), out price)) break;
+                Console.WriteLine("Invalid price. Please enter a decimal value (e.g. 19.99).");
+            }
 
-            Console.Write("Enter Author ID: ");
-            int authorId = int.Parse(Console.ReadLine() ?? "0");
+            int authorId;
+            while (true)
+            {
+                Console.Write("Enter Author ID: ");
+                if (int.TryParse(Console.ReadLine(), out authorId)) break;
+                Console.WriteLine("Invalid ID. Please enter a number.");
+            }
 
-            Console.Write("Enter publishing date (yyyy-mm-dd): ");
-            DateTime pubDate = DateTime.Parse(Console.ReadLine() ?? "2000-01-01");
+            DateTime pubDate;
+            while (true)
+            {
+                Console.Write("Enter publishing date (yyyy-mm-dd): ");
+                string input = Console.ReadLine() ?? "";
+                // If empty, default to year 2000 
+                if (string.IsNullOrWhiteSpace(input)) { pubDate = new DateTime(2000, 1, 1); break; }
 
-            Console.Write("Is the book available? (true/false): ");
-            bool status = bool.Parse(Console.ReadLine() ?? "0");
+                if (DateTime.TryParse(input, out pubDate)) break;
+                Console.WriteLine("Invalid date. Format: yyyy-mm-dd");
+            }
 
-            Console.Write("Enter genre: ");
-            string? genre = Console.ReadLine();
+            bool status;
+            while (true)
+            {
+                Console.Write("Is the book available?: ");
+                if (bool.TryParse(Console.ReadLine(), out status)) break;
+                Console.WriteLine("Please type '0' or '1'.");
+            }
+
+            string genre = "";
+            while (string.IsNullOrWhiteSpace(genre))
+            {
+                Console.Write("Enter genre: ");
+                genre = Console.ReadLine() ?? "";
+            }
 
             MySqlConnection connection = new MySqlConnection(MainProgram.ConnectionString);
 

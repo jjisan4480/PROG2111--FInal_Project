@@ -1,7 +1,7 @@
 ﻿//
 // FILE               : Member.cs
 // PROJECT            : RBLibraryManagement
-// PROGRAMMER		  : Josiah Williams
+// PROGRAMMER		  : Josiah Williams, Jobair Ahmed Jisan
 // FIRST VERSION      : 2025-12-09
 // DESCRIPTION        : This class handles CRUD operations for the Member entity in the library management system.
 // 
@@ -77,20 +77,41 @@ namespace RBLibraryManagement
         {
             Console.WriteLine("\n--- Create Member ---");
 
-            Console.Write("Enter first name: ");
-            string? first = Console.ReadLine();
+            string first = "";
+            while (string.IsNullOrWhiteSpace(first))
+            {
+                Console.Write("Enter first name: ");
+                first = Console.ReadLine() ?? "";
+            }
 
-            Console.Write("Enter last name: ");
-            string? last = Console.ReadLine();
+            string last = "";
+            while (string.IsNullOrWhiteSpace(last))
+            {
+                Console.Write("Enter last name: ");
+                last = Console.ReadLine() ?? "";
+            }
 
-            Console.Write("Enter email: ");
-            string? email = Console.ReadLine();
+            string email = "";
+            while (string.IsNullOrWhiteSpace(email))
+            {
+                Console.Write("Enter email: ");
+                email = Console.ReadLine() ?? "";
+            }
 
-            Console.Write("Enter phone: ");
-            string? phone = Console.ReadLine();
+            string phone = "";
+            while (string.IsNullOrWhiteSpace(phone))
+            {
+                Console.Write("Enter phone: ");
+                phone = Console.ReadLine() ?? "";
+            }
 
-            Console.Write("Enter membership date (yyyy-mm-dd): ");
-            string? date = Console.ReadLine();
+            DateTime date;
+            while (true)
+            {
+                Console.Write("Enter membership date (yyyy-mm-dd): ");
+                if (DateTime.TryParse(Console.ReadLine(), out date)) break;
+                Console.WriteLine("Invalid date format. Please use yyyy-mm-dd.");
+            }
 
             MySqlConnection connection = new MySqlConnection(MainProgram.ConnectionString);
 
@@ -113,10 +134,8 @@ namespace RBLibraryManagement
                     newRow["last_name"] = last;
                     newRow["email"] = email;
                     newRow["phone"] = phone;
-                    if (!DateTime.TryParse(date, out DateTime parsedDate))
-                    {
-                        throw new Exception("Invalid date format. Use yyyy-mm-dd.");
-                    }
+                    newRow["date"] = date;
+                    
                     table.Rows.Add(newRow);
 
                 }

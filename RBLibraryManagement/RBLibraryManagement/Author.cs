@@ -1,7 +1,7 @@
 ﻿//
 // FILE               : Author.cs
 // PROJECT            : RBLibraryManagement
-// PROGRAMMER		  : Josiah Williams
+// PROGRAMMER		  : Josiah Williams, Jobair Ahmed Jisan
 // FIRST VERSION      : 2025-12-09
 // DESCRIPTION        : This class handles CRUD operations for the Author entity in the library management system.
 //   

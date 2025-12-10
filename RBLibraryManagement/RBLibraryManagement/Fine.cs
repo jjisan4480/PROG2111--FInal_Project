@@ -1,7 +1,7 @@
 ﻿//
 // FILE               : Fine.cs
 // PROJECT            : RBLibraryManagement
-// PROGRAMMER		  : Josiah Williams
+// PROGRAMMER		  : Josiah Williams, Jobair Ahmed Jisan
 // FIRST VERSION      : 2025-12-09
 // DESCRIPTION        : This class handles CRUD operations for the Fine entity in the library management system.
 //   
@@ -73,15 +73,31 @@ namespace RBLibraryManagement
         {
             Console.WriteLine("\n--- Create Fine ---");
 
-            Console.Write("Enter Borrow ID: ");
-            int borrowId = int.Parse(Console.ReadLine() ?? "0");
+            int borrowId;
+            while (true)
+            {
+                Console.Write("Enter Borrow ID: ");
+                if (int.TryParse(Console.ReadLine(), out borrowId)) break;
+                Console.WriteLine("Invalid input. Must be a number.");
+            }
 
-            Console.Write("Enter fine amount: ");
-            decimal amount = decimal.Parse(Console.ReadLine() ?? "0");
+            decimal amount;
+            while (true)
+            {
+                Console.Write("Enter fine amount: ");
+                if (decimal.TryParse(Console.ReadLine(), out amount)) break;
+                Console.WriteLine("Invalid amount. Enter a decimal number.");
+            }
 
-            Console.Write("Enter due date (yyyy-mm-dd): ");
-            DateTime dueDate = DateTime.Parse(Console.ReadLine() ?? "2000-01-01");
+            DateTime dueDate;
+            while (true)
+            {
+                Console.Write("Enter due date (yyyy-mm-dd): ");
+                if (DateTime.TryParse(Console.ReadLine(), out dueDate)) break;
+                Console.WriteLine("Invalid date.");
+            }
 
+ 
             Console.Write("Enter paid date (yyyy-mm-dd) or leave blank: ");
             string? paid = Console.ReadLine();
             object paidDate = string.IsNullOrWhiteSpace(paid) ? DBNull.Value : DateTime.Parse(paid);

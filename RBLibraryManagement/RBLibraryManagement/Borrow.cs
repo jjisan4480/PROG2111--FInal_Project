@@ -1,7 +1,7 @@
 ﻿//
 // FILE               : Borrow.cs
 // PROJECT            : RBLibraryManagement
-// PROGRAMMER		  : Josiah Williams
+// PROGRAMMER		  : Josiah Williams, Jobair Ahmed Jisan
 // FIRST VERSION      : 2025-12-09
 // DESCRIPTION        : This class handles CRUD operations for the Borrow entity in the library management system.
 //   
@@ -75,20 +75,45 @@ namespace RBLibraryManagement
         {
             Console.WriteLine("\n--- Create Borrow Record ---");
 
-            Console.Write("Enter Book ID: ");
-            int bookId = int.Parse(Console.ReadLine() ?? "0");
+            int bookId;
+            while (true)
+            {
+                Console.Write("Enter Book ID: ");
+                if (int.TryParse(Console.ReadLine(), out bookId)) break;
+                Console.WriteLine("Invalid input. Must be a number.");
+            }
 
-            Console.Write("Enter Member ID: ");
-            int memberId = int.Parse(Console.ReadLine() ?? "0");
+            int memberId;
+            while (true)
+            {
+                Console.Write("Enter Member ID: ");
+                if (int.TryParse(Console.ReadLine(), out memberId)) break;
+                Console.WriteLine("Invalid input. Must be a number.");
+            }
 
-            Console.Write("Enter Librarian ID: ");
-            int libId = int.Parse(Console.ReadLine() ?? "0");
+            int libId;
+            while (true)
+            {
+                Console.Write("Enter Librarian ID: ");
+                if (int.TryParse(Console.ReadLine(), out libId)) break;
+                Console.WriteLine("Invalid input. Must be a number.");
+            }
 
-            Console.Write("Enter borrow date (yyyy-mm-dd): ");
-            DateTime borrowDate = DateTime.Parse(Console.ReadLine() ?? "2000-01-01");
+            DateTime borrowDate;
+            while (true)
+            {
+                Console.Write("Enter borrow date (yyyy-mm-dd): ");
+                if (DateTime.TryParse(Console.ReadLine(), out borrowDate)) break;
+                Console.WriteLine("Invalid date.");
+            }
 
-            Console.Write("Enter return date (yyyy-mm-dd): ");
-            DateTime returnDate = DateTime.Parse(Console.ReadLine() ?? "2000-01-01");
+            DateTime returnDate;
+            while (true)
+            {
+                Console.Write("Enter return date (yyyy-mm-dd): ");
+                if (DateTime.TryParse(Console.ReadLine(), out returnDate)) break;
+                Console.WriteLine("Invalid date.");
+            }
 
             MySqlConnection connection = new MySqlConnection(MainProgram.ConnectionString);
 
