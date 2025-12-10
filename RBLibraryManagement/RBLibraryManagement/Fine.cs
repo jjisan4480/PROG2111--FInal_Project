@@ -12,6 +12,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace RBLibraryManagement
 {
@@ -57,7 +58,8 @@ namespace RBLibraryManagement
 
         public char FineMenu()
         {
-            Console.WriteLine("\nCRUD Options");
+            Console.WriteLine("\n");
+            Console.WriteLine("CRUD Options\n");
             Console.WriteLine("1. Create Fine");
             Console.WriteLine("2. Read Fine Table");
             Console.WriteLine("3. Update Fine");
@@ -72,20 +74,19 @@ namespace RBLibraryManagement
             Console.WriteLine("\n--- Create Fine ---");
 
             Console.Write("Enter Borrow ID: ");
-            int borrowId = int.Parse(Console.ReadLine());
+            int borrowId = int.Parse(Console.ReadLine() ?? "0");
 
             Console.Write("Enter fine amount: ");
-            decimal amount = decimal.Parse(Console.ReadLine());
+            decimal amount = decimal.Parse(Console.ReadLine() ?? "0");
 
             Console.Write("Enter due date (yyyy-mm-dd): ");
-            DateTime dueDate = DateTime.Parse(Console.ReadLine());
+            DateTime dueDate = DateTime.Parse(Console.ReadLine() ?? "2000-01-01");
 
             Console.Write("Enter paid date (yyyy-mm-dd) or leave blank: ");
             string? paid = Console.ReadLine();
             object paidDate = string.IsNullOrWhiteSpace(paid) ? DBNull.Value : DateTime.Parse(paid);
 
-            string connString = "Server=localhost;Port=3306;Uid=root;Pwd=root;Database=Library_Management_System;";
-            MySqlConnection connection = new MySqlConnection(connString);
+            MySqlConnection connection = new MySqlConnection(MainProgram.ConnectionString);
 
             try
             {
@@ -129,8 +130,7 @@ namespace RBLibraryManagement
         {
             Console.WriteLine("\n--- Fines ---");
 
-            string connectionstring = "Server=localhost;Port=3306;Uid=root;Pwd=root;Database=Library_Management_System;";
-            MySqlConnection connection = new MySqlConnection(connectionstring);
+            MySqlConnection connection = new MySqlConnection(MainProgram.ConnectionString);
             string query = "SELECT * FROM Fines";
 
             try
@@ -162,11 +162,37 @@ namespace RBLibraryManagement
 
         private void UpdateFine()
         {
-            Console.WriteLine("Update Fine (not implemented)");
+            Console.WriteLine("\n--- Update Fine ---");
+
+            Console.Write("Enter Fine ID to update: ");
+            if (!int.TryParse(Console.ReadLine(), out int id)) { Console.WriteLine("Invalid ID"); return; }
+
+            Console.Write("Enter Date Paid (yyyy-mm-dd) or press Enter if unpaid: ");
+            string dateInput = Console.ReadLine() ?? "";
+
+            // Handle null date if they press enter
+            object paidDate = string.IsNullOrWhiteSpace(dateInput) ? DBNull.Value : DateTime.Parse(dateInput);
+
+            MySqlConnection connection = new MySqlConnection(MainProgram.ConnectionString);
+            try
+                {
+                    connection.Open();
+                    string query = "UPDATE Fines SET paid_date = @date WHERE fine_ID = @id";
+
+                    MySqlCommand cmd = new MySqlCommand(query, connection);
+                    cmd.Parameters.AddWithValue("@date", paidDate);
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    int rows = cmd.ExecuteNonQuery();
+                    if (rows > 0) Console.WriteLine("Fine updated successfully.");
+                    else Console.WriteLine("Fine ID not found.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                }
+            
         }
-        private void DeleteFine()
-        {
-            Console.WriteLine("Update Fine (not implemented)");
-        }
+        
     }
 }

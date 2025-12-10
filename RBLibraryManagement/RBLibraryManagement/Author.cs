@@ -12,6 +12,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace RBLibraryManagement
 {
@@ -59,7 +60,8 @@ namespace RBLibraryManagement
 
         public char AuthorMenu()
         {
-            Console.WriteLine("\nCRUD Options");
+            Console.WriteLine("\n");
+            Console.WriteLine("CRUD Options\n");
             Console.WriteLine("1. Create Author");
             Console.WriteLine("2. Read Author Table");
             Console.WriteLine("3. Update Author");
@@ -74,8 +76,7 @@ namespace RBLibraryManagement
             Console.WriteLine("\n--- Create Author ---");
 
             GetInfo();
-            string connString = "Server=localhost;Port=3306;Uid=root;Pwd=root;Database=Library_Management_System;";
-            MySqlConnection connection = new MySqlConnection(connString);
+            MySqlConnection connection = new MySqlConnection(MainProgram.ConnectionString);
 
             try
             {
@@ -116,8 +117,7 @@ namespace RBLibraryManagement
         {
             Console.WriteLine("\n--- Author List ---");
 
-            string connectionstring = "Server=localhost;Port=3306;Uid=root;Pwd=root;Database=Library_Management_System;";
-            MySqlConnection connection = new MySqlConnection(connectionstring);
+            MySqlConnection connection = new MySqlConnection(MainProgram.ConnectionString);
             string query = "SELECT * FROM Author";
 
             try
@@ -145,14 +145,45 @@ namespace RBLibraryManagement
             }
         }
 
-        
-        private void UpdateAuthor() { 
-            Console.WriteLine("Update Author (not implemented)");
-        } 
-        private void DeleteAuthor()
+        private void UpdateAuthor()
         {
-           Console.WriteLine("Update Author (not implemented)");
+            Console.WriteLine("\n--- Update Author ---");
+
+            Console.Write("Enter Author ID to update: ");
+            if (!int.TryParse(Console.ReadLine(), out int id))
+            {
+                Console.WriteLine("Invalid ID.");
+                return;
+            }
+
+            Console.Write("Enter new First Name: ");
+            string newFirst = Console.ReadLine() ?? "";
+
+            Console.Write("Enter new Last Name: ");
+            string newLast = Console.ReadLine() ?? "";
+
+            MySqlConnection connection = new MySqlConnection(MainProgram.ConnectionString);
+            try
+                {
+                    connection.Open();
+                    string query = "UPDATE Author SET first_name = @first, last_name = @last WHERE author_id = @id";
+
+                    MySqlCommand cmd = new MySqlCommand(query, connection);
+                    cmd.Parameters.AddWithValue("@first", newFirst);
+                    cmd.Parameters.AddWithValue("@last", newLast);
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    int rows = cmd.ExecuteNonQuery();
+                    if (rows > 0) Console.WriteLine("Author updated successfully.");
+                    else Console.WriteLine("Author ID not found.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                }
+            
         }
+      
 
         private void GetInfo()
         {

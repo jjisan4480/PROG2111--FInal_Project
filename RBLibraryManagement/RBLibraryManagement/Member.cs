@@ -6,13 +6,14 @@
 // DESCRIPTION        : This class handles CRUD operations for the Member entity in the library management system.
 // 
 
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
-using System.Data;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 
 namespace RBLibraryManagement
@@ -61,7 +62,8 @@ namespace RBLibraryManagement
 
         public char MemberMenu()
         {
-            Console.WriteLine("\nCRUD Options");
+            Console.WriteLine("\n");
+            Console.WriteLine("CRUD Options\n");
             Console.WriteLine("1. Create Member");
             Console.WriteLine("2. Read Member Table");
             Console.WriteLine("3. Update Member");
@@ -90,8 +92,7 @@ namespace RBLibraryManagement
             Console.Write("Enter membership date (yyyy-mm-dd): ");
             string? date = Console.ReadLine();
 
-            string connString = "Server=localhost;Port=3306;Uid=root;Pwd=root;Database=Library_Management_System;";
-            MySqlConnection connection = new MySqlConnection(connString);
+            MySqlConnection connection = new MySqlConnection(MainProgram.ConnectionString);
 
             try
             {
@@ -152,8 +153,7 @@ namespace RBLibraryManagement
         {
             Console.WriteLine("\n--- Member List ---");
 
-            string connectionstring = "Server=localhost;Port=3306;Uid=root;Pwd=root;Database=Library_Management_System;";
-            MySqlConnection connection = new MySqlConnection(connectionstring);
+            MySqlConnection connection = new MySqlConnection(MainProgram.ConnectionString);
             string query = "SELECT * FROM Member";
 
             try
@@ -189,11 +189,38 @@ namespace RBLibraryManagement
 
         private void UpdateMember()
         {
-            Console.WriteLine("Update Member (not implemented)");
+            Console.WriteLine("\n--- Update Member Contact Info ---");
+
+            Console.Write("Enter Member ID to update: ");
+            if (!int.TryParse(Console.ReadLine(), out int id)) { Console.WriteLine("Invalid ID"); return; }
+
+            Console.Write("Enter new Email: ");
+            string email = Console.ReadLine() ?? "";
+
+            Console.Write("Enter new Phone: ");
+            string phone = Console.ReadLine() ?? "";
+
+            MySqlConnection connection = new MySqlConnection(MainProgram.ConnectionString);
+            try
+                {
+                    connection.Open();
+                    string query = "UPDATE Member SET email = @email, phone = @phone WHERE member_ID = @id";
+
+                    MySqlCommand cmd = new MySqlCommand(query, connection);
+                    cmd.Parameters.AddWithValue("@email", email);
+                    cmd.Parameters.AddWithValue("@phone", phone);
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    int rows = cmd.ExecuteNonQuery();
+                    if (rows > 0) Console.WriteLine("Member updated successfully.");
+                    else Console.WriteLine("Member ID not found.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                }
+            
         }
-        private void DeleteMember()
-        {
-            Console.WriteLine("Update Member (not implemented)");
-        }
+        
     }
 }

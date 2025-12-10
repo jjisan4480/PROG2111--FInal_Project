@@ -46,7 +46,9 @@ namespace RBLibraryManagement
                         author.Run();
                         break;
                     default:
-                        Console.WriteLine("\nInvalid choice. Try again.");
+                        
+                        Console.WriteLine("\nInvalid choice. Try again.\n");
+                        
                         break;
                 }
             }
@@ -56,7 +58,8 @@ namespace RBLibraryManagement
 
         public ConsoleKeyInfo DatabaseMenu()
         {
-            Console.WriteLine("\nDatabase Management Menu");
+            Console.WriteLine("\n");
+            Console.WriteLine("Database Management Menu\n");
             Console.WriteLine("1. Member Table");
             Console.WriteLine("2. Book Table");
             Console.WriteLine("3. Borrow Table");

@@ -12,6 +12,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace RBLibraryManagement
 {
@@ -56,8 +57,10 @@ namespace RBLibraryManagement
         }
 
         public char BorrowMenu()
+
         {
-            Console.WriteLine("\nCRUD Options");
+            Console.WriteLine("\n");
+            Console.WriteLine("CRUD Options\n");
             Console.WriteLine("1. Create Borrow");
             Console.WriteLine("2. Read Borrow Table");
             Console.WriteLine("3. Update Borrow");
@@ -73,22 +76,21 @@ namespace RBLibraryManagement
             Console.WriteLine("\n--- Create Borrow Record ---");
 
             Console.Write("Enter Book ID: ");
-            int bookId = int.Parse(Console.ReadLine());
+            int bookId = int.Parse(Console.ReadLine() ?? "0");
 
             Console.Write("Enter Member ID: ");
-            int memberId = int.Parse(Console.ReadLine());
+            int memberId = int.Parse(Console.ReadLine() ?? "0");
 
             Console.Write("Enter Librarian ID: ");
-            int libId = int.Parse(Console.ReadLine());
+            int libId = int.Parse(Console.ReadLine() ?? "0");
 
             Console.Write("Enter borrow date (yyyy-mm-dd): ");
-            DateTime borrowDate = DateTime.Parse(Console.ReadLine());
+            DateTime borrowDate = DateTime.Parse(Console.ReadLine() ?? "2000-01-01");
 
             Console.Write("Enter return date (yyyy-mm-dd): ");
-            DateTime returnDate = DateTime.Parse(Console.ReadLine());
+            DateTime returnDate = DateTime.Parse(Console.ReadLine() ?? "2000-01-01");
 
-            string connString = "Server=localhost;Port=3306;Uid=root;Pwd=root;Database=Library_Management_System;";
-            MySqlConnection connection = new MySqlConnection(connString);
+            MySqlConnection connection = new MySqlConnection(MainProgram.ConnectionString);
 
             try
             {
@@ -135,8 +137,7 @@ namespace RBLibraryManagement
         {
             Console.WriteLine("\n--- Borrow Records ---");
 
-            string connectionstring = "Server=localhost;Port=3306;Uid=root;Pwd=root;Database=Library_Management_System;";
-            MySqlConnection connection = new MySqlConnection(connectionstring);
+            MySqlConnection connection = new MySqlConnection(MainProgram.ConnectionString);
             string query = "SELECT * FROM Borrow";
 
             try
@@ -167,14 +168,41 @@ namespace RBLibraryManagement
             }
         }
 
-        
+
         private void UpdateBorrow()
         {
-            Console.WriteLine("Update Borrow (not implemented)");
+            Console.WriteLine("\n--- Update Borrow Record (Return Book) ---");
+
+            Console.Write("Enter Borrow ID to update: ");
+            if (!int.TryParse(Console.ReadLine(), out int id)) { Console.WriteLine("Invalid ID"); return; }
+
+            Console.Write("Enter Actual Return Date (yyyy-mm-dd): ");
+            if (!DateTime.TryParse(Console.ReadLine(), out DateTime returnDate))
+            {
+                Console.WriteLine("Invalid Date");
+                return;
+            }
+
+            MySqlConnection connection = new MySqlConnection(MainProgram.ConnectionString);
+            try
+                {
+                    connection.Open();
+                    string query = "UPDATE Borrow SET return_date = @date WHERE borrow_ID = @id";
+
+                    MySqlCommand cmd = new MySqlCommand(query, connection);
+                    cmd.Parameters.AddWithValue("@date", returnDate);
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    int rows = cmd.ExecuteNonQuery();
+                    if (rows > 0) Console.WriteLine("Borrow record updated.");
+                    else Console.WriteLine("Borrow ID not found.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                }
+            
         }
-        private void DeleteBorrow()
-        {
-            Console.WriteLine("Update Borrow (not implemented)");
-        }
+        
     }
 }

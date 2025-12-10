@@ -12,6 +12,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace RBLibraryManagement
 {
@@ -57,7 +58,8 @@ namespace RBLibraryManagement
 
         public char LibrarianMenu()
         {
-            Console.WriteLine("\nCRUD Options");
+            Console.WriteLine("\n");
+            Console.WriteLine("CRUD Options\n");
             Console.WriteLine("1. Create Librarian");
             Console.WriteLine("2. Read Librarian Table");
             Console.WriteLine("3. Update Librarian");
@@ -73,16 +75,15 @@ namespace RBLibraryManagement
             Console.WriteLine("\n--- Create Librarian ---");
 
             Console.Write("Enter first name: ");
-            string? first = Console.ReadLine();
+            string? first = Console.ReadLine() ?? "";
 
             Console.Write("Enter last name: ");
-            string? last = Console.ReadLine();
+            string? last = Console.ReadLine() ?? "";
 
             Console.Write("Enter phone number: ");
-            string? phone = Console.ReadLine();
+            string? phone = Console.ReadLine() ?? "";
 
-            string connString = "Server=localhost;Port=3306;Uid=root;Pwd=root;Database=Library_Management_System;";
-            MySqlConnection connection = new MySqlConnection(connString);
+            MySqlConnection connection = new MySqlConnection(MainProgram.ConnectionString);
             try
             {
                 connection.Open();
@@ -125,8 +126,7 @@ namespace RBLibraryManagement
         {
             Console.WriteLine("\n--- Librarian List ---");
 
-            string connectionstring = "Server=localhost;Port=3306;Uid=root;Pwd=root;Database=Library_Management_System;";
-            MySqlConnection connection = new MySqlConnection(connectionstring);
+            MySqlConnection connection = new MySqlConnection(MainProgram.ConnectionString);
             string query = "SELECT * FROM Librarian";
 
             try
@@ -158,11 +158,34 @@ namespace RBLibraryManagement
 
         private void UpdateLibrarian()
         {
-            Console.WriteLine("Update Librarian (not implemented)");
+            Console.WriteLine("\n--- Update Librarian ---");
+
+            Console.Write("Enter Librarian ID to update: ");
+            if (!int.TryParse(Console.ReadLine(), out int id)) { Console.WriteLine("Invalid ID"); return; }
+
+            Console.Write("Enter new Phone Number: ");
+            string phone = Console.ReadLine() ?? "";
+
+            MySqlConnection connection = new MySqlConnection(MainProgram.ConnectionString);
+            try
+                {
+                    connection.Open();
+                    string query = "UPDATE Librarian SET phone_number = @phone WHERE librarian_ID = @id";
+
+                    MySqlCommand cmd = new MySqlCommand(query, connection);
+                    cmd.Parameters.AddWithValue("@phone", phone);
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    int rows = cmd.ExecuteNonQuery();
+                    if (rows > 0) Console.WriteLine("Librarian updated successfully.");
+                    else Console.WriteLine("Librarian ID not found.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                }
+            
         }
-        private void DeleteLibrarian()
-        {
-            Console.WriteLine("Update Librarian (not implemented)");
-        }
+        
     }
 }

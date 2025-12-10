@@ -13,6 +13,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace RBLibraryManagement
 {
@@ -58,7 +59,8 @@ namespace RBLibraryManagement
 
         public char BookMenu()
         {
-            Console.WriteLine("\nCRUD Options");
+            Console.WriteLine("\n");
+            Console.WriteLine("CRUD Options\n");
             Console.WriteLine("1. Create Book");
             Console.WriteLine("2. Read Book Table");
             Console.WriteLine("3. Update Book");
@@ -76,25 +78,24 @@ namespace RBLibraryManagement
             string? title = Console.ReadLine();
 
             Console.Write("Enter ISBN (numbers only): ");
-            int isbn = int.Parse(Console.ReadLine());
+            int isbn = int.Parse(Console.ReadLine() ?? "0");
 
             Console.Write("Enter price: ");
-            decimal price = decimal.Parse(Console.ReadLine());
+            decimal price = decimal.Parse(Console.ReadLine() ?? "0");
 
             Console.Write("Enter Author ID: ");
-            int authorId = int.Parse(Console.ReadLine());
+            int authorId = int.Parse(Console.ReadLine() ?? "0");
 
             Console.Write("Enter publishing date (yyyy-mm-dd): ");
-            DateTime pubDate = DateTime.Parse(Console.ReadLine());
+            DateTime pubDate = DateTime.Parse(Console.ReadLine() ?? "2000-01-01");
 
             Console.Write("Is the book available? (true/false): ");
-            bool status = bool.Parse(Console.ReadLine());
+            bool status = bool.Parse(Console.ReadLine() ?? "0");
 
             Console.Write("Enter genre: ");
             string? genre = Console.ReadLine();
 
-            string connString = "Server=localhost;Port=3306;Uid=root;Pwd=root;Database=Library_Management_System;";
-            MySqlConnection connection = new MySqlConnection(connString);
+            MySqlConnection connection = new MySqlConnection(MainProgram.ConnectionString);
 
             try
             {
@@ -144,8 +145,7 @@ namespace RBLibraryManagement
         {
             Console.WriteLine("\n--- Book List ---");
 
-            string connectionstring = "Server=localhost;Port=3306;Uid=root;Pwd=root;Database=Library_Management_System;";
-            MySqlConnection connection = new MySqlConnection(connectionstring);
+            MySqlConnection connection = new MySqlConnection(MainProgram.ConnectionString);
             string query = "SELECT * FROM Book";
 
             try
@@ -178,14 +178,41 @@ namespace RBLibraryManagement
             }
         }
 
-        
+
         private void UpdateBook()
         {
-            Console.WriteLine("Update Book (not implemented)");
+            Console.WriteLine("\n--- Update Book ---");
+
+            Console.Write("Enter Book ID to update: ");
+            if (!int.TryParse(Console.ReadLine(), out int id)) { Console.WriteLine("Invalid ID"); return; }
+
+            Console.Write("Enter new Price: ");
+            if (!decimal.TryParse(Console.ReadLine(), out decimal price)) { Console.WriteLine("Invalid Price"); return; }
+
+            Console.Write("Is the book available? (true/false): ");
+            if (!bool.TryParse(Console.ReadLine(), out bool status)) { Console.WriteLine("Invalid Status"); return; }
+
+            MySqlConnection connection = new MySqlConnection(MainProgram.ConnectionString);
+            try
+                {
+                    connection.Open();
+                    string query = "UPDATE Book SET price = @price, book_status = @status WHERE book_ID = @id";
+
+                    MySqlCommand cmd = new MySqlCommand(query, connection);
+                    cmd.Parameters.AddWithValue("@price", price);
+                    cmd.Parameters.AddWithValue("@status", status);
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    int rows = cmd.ExecuteNonQuery();
+                    if (rows > 0) Console.WriteLine("Book updated successfully.");
+                    else Console.WriteLine("Book ID not found.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                }
+            
         }
-        private void DeleteBook()
-        {
-            Console.WriteLine("Update Book (not implemented)");
-        }
+        
     }
 }
