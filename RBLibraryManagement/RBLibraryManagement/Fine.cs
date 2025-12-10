@@ -81,7 +81,7 @@ namespace RBLibraryManagement
             DateTime dueDate = DateTime.Parse(Console.ReadLine());
 
             Console.Write("Enter paid date (yyyy-mm-dd) or leave blank: ");
-            string paid = Console.ReadLine();
+            string? paid = Console.ReadLine();
             object paidDate = string.IsNullOrWhiteSpace(paid) ? DBNull.Value : DateTime.Parse(paid);
 
             string connString = "Server=localhost;Port=3306;Uid=root;Pwd=root;Database=Library_Management_System;";
@@ -95,17 +95,22 @@ namespace RBLibraryManagement
 
                 DataSet ds = new DataSet();
                 adapter.Fill(ds, "Fines");
-                DataTable table = ds.Tables["Fines"];
+                DataTable? table = ds.Tables["Fines"];
+                if (table != null)
+                {
+                    DataRow row = table.NewRow();
+                    row["borrow_ID"] = borrowId;
+                    row["fine_amount"] = amount;
+                    row["due_date"] = dueDate;
+                    row["paid_date"] = paidDate;
 
-                DataRow row = table.NewRow();
-                row["borrow_ID"] = borrowId;
-                row["fine_amount"] = amount;
-                row["due_date"] = dueDate;
-                row["paid_date"] = paidDate;
+                    table.Rows.Add(row);
+                } else
+                {
+                  throw new Exception("Failed to load Fines table.");
+                }
 
-                table.Rows.Add(row);
-
-                MySqlCommandBuilder builder = new MySqlCommandBuilder(adapter);
+                    MySqlCommandBuilder builder = new MySqlCommandBuilder(adapter);
                 adapter.Update(ds, "Fines");
 
                 Console.WriteLine("Fine created.");

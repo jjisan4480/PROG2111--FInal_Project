@@ -73,13 +73,13 @@ namespace RBLibraryManagement
             Console.WriteLine("\n--- Create Librarian ---");
 
             Console.Write("Enter first name: ");
-            string first = Console.ReadLine();
+            string? first = Console.ReadLine();
 
             Console.Write("Enter last name: ");
-            string last = Console.ReadLine();
+            string? last = Console.ReadLine();
 
             Console.Write("Enter phone number: ");
-            string phone = Console.ReadLine();
+            string? phone = Console.ReadLine();
 
             string connString = "Server=localhost;Port=3306;Uid=root;Pwd=root;Database=Library_Management_System;";
             MySqlConnection connection = new MySqlConnection(connString);
@@ -91,16 +91,21 @@ namespace RBLibraryManagement
 
                 DataSet ds = new DataSet();
                 adapter.Fill(ds, "Librarian");
-                DataTable table = ds.Tables["Librarian"];
+                DataTable? table = ds.Tables["Librarian"];
+                if (table != null)
+                {
+                    DataRow newRow = table.NewRow();
+                    newRow["first_name"] = first;
+                    newRow["last_name"] = last;
+                    newRow["phone_number"] = phone;
 
-                DataRow newRow = table.NewRow();
-                newRow["first_name"] = first;
-                newRow["last_name"] = last;
-                newRow["phone_number"] = phone;
+                    table.Rows.Add(newRow);
+                } else
+                {
+                    throw new Exception("Failed to load Librarian table.");
+                }
 
-                table.Rows.Add(newRow);
-
-                MySqlCommandBuilder builder = new MySqlCommandBuilder(adapter);
+                    MySqlCommandBuilder builder = new MySqlCommandBuilder(adapter);
                 adapter.Update(ds, "Librarian");
 
                 Console.WriteLine("Librarian created.");

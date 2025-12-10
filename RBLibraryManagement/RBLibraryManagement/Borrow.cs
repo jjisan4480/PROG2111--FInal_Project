@@ -98,18 +98,23 @@ namespace RBLibraryManagement
 
                 DataSet ds = new DataSet();
                 adapter.Fill(ds, "Borrow");
-                DataTable table = ds.Tables["Borrow"];
+                DataTable? table = ds.Tables["Borrow"];
+                if (table != null)
+                {
+                    DataRow row = table.NewRow();
+                    row["book_ID"] = bookId;
+                    row["member_ID"] = memberId;
+                    row["issuedByLibrarian"] = libId;
+                    row["borrowing_date"] = borrowDate;
+                    row["return_date"] = returnDate;
 
-                DataRow row = table.NewRow();
-                row["book_ID"] = bookId;
-                row["member_ID"] = memberId;
-                row["issuedByLibrarian"] = libId;
-                row["borrowing_date"] = borrowDate;
-                row["return_date"] = returnDate;
+                    table.Rows.Add(row);
+                } else
+                {
+                    throw new Exception("Failed to load Borrow table");
+                }
 
-                table.Rows.Add(row);
-
-                MySqlCommandBuilder builder = new MySqlCommandBuilder(adapter);
+                    MySqlCommandBuilder builder = new MySqlCommandBuilder(adapter);
                 adapter.Update(ds, "Borrow");
 
                 Console.WriteLine("Borrow record added.");

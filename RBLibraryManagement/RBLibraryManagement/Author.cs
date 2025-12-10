@@ -72,10 +72,10 @@ namespace RBLibraryManagement
             Console.WriteLine("\n--- Create Author ---");
 
             Console.Write("Enter first name: ");
-            string first = Console.ReadLine();
+            string? first = Console.ReadLine();
 
             Console.Write("Enter last name: ");
-            string last = Console.ReadLine();
+            string? last = Console.ReadLine();
 
             string connString = "Server=localhost;Port=3306;Uid=root;Pwd=root;Database=Library_Management_System;";
             MySqlConnection connection = new MySqlConnection(connString);
@@ -88,15 +88,19 @@ namespace RBLibraryManagement
 
                 DataSet ds = new DataSet();
                 adapter.Fill(ds, "Author");
-                DataTable table = ds.Tables["Author"];
+                DataTable? table = ds.Tables["Author"];
+                if (table != null)
+                {
+                    DataRow row = table.NewRow();
+                    row["first_name"] = first;
+                    row["last_name"] = last;
 
-                DataRow row = table.NewRow();
-                row["first_name"] = first;
-                row["last_name"] = last;
-
-                table.Rows.Add(row);
-
-                MySqlCommandBuilder builder = new MySqlCommandBuilder(adapter);
+                    table.Rows.Add(row);
+                } else
+                {
+                    throw new Exception("Failed to load Author table");
+                }
+                    MySqlCommandBuilder builder = new MySqlCommandBuilder(adapter);
                 adapter.Update(ds, "Author");
 
                 Console.WriteLine("Author successfully created.");

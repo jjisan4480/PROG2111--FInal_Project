@@ -104,20 +104,30 @@ namespace RBLibraryManagement
                 DataSet ds = new DataSet();
                 adapter.Fill(ds, "Member");
 
-                DataTable table = ds.Tables["Member"];
+                DataTable? table = ds.Tables["Member"];
+                if(table != null)
+                {
+                    DataRow newRow = table.NewRow();
+                    newRow["first_name"] = first;
+                    newRow["last_name"] = last;
+                    newRow["email"] = email;
+                    newRow["phone"] = phone;
+                    if (!DateTime.TryParse(date, out DateTime parsedDate))
+                    {
+                        throw new Exception("Invalid date format. Use yyyy-mm-dd.");
+                    }
+                    table.Rows.Add(newRow);
 
-                DataRow newRow = table.NewRow();
-                newRow["first_name"] = first;
-                newRow["last_name"] = last;
-                newRow["email"] = email;
-                newRow["phone"] = phone;
-                newRow["membership_date"] = DateTime.Parse(date);
+                }
+                else
+                {
+                 throw new Exception("Failed to load Member table.");
+                }
 
 
-                table.Rows.Add(newRow);
 
 
-                MySqlCommandBuilder builder = new MySqlCommandBuilder(adapter);
+                    MySqlCommandBuilder builder = new MySqlCommandBuilder(adapter);
 
 
                 adapter.Update(ds, "Member");

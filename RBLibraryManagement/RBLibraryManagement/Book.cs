@@ -6,6 +6,7 @@
 // DESCRIPTION        : This class handles CRUD operations for the Book entity in the library management system.
 // 
 using MySql.Data.MySqlClient;
+using MySqlX.XDevAPI.Relational;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -72,7 +73,7 @@ namespace RBLibraryManagement
             Console.WriteLine("\n--- Create Book ---");
 
             Console.Write("Enter title: ");
-            string title = Console.ReadLine();
+            string? title = Console.ReadLine();
 
             Console.Write("Enter ISBN (numbers only): ");
             int isbn = int.Parse(Console.ReadLine());
@@ -90,7 +91,7 @@ namespace RBLibraryManagement
             bool status = bool.Parse(Console.ReadLine());
 
             Console.Write("Enter genre: ");
-            string genre = Console.ReadLine();
+            string? genre = Console.ReadLine();
 
             string connString = "Server=localhost;Port=3306;Uid=root;Pwd=root;Database=Library_Management_System;";
             MySqlConnection connection = new MySqlConnection(connString);
@@ -103,20 +104,27 @@ namespace RBLibraryManagement
 
                 DataSet ds = new DataSet();
                 adapter.Fill(ds, "Book");
-                DataTable table = ds.Tables["Book"];
+               
+                DataTable? table = ds.Tables["Book"];
+                if (table != null)
+                {
+                    DataRow row = table.NewRow();
+                    row["title"] = title;
+                    row["ISBN"] = isbn;
+                    row["price"] = price;
+                    row["author_ID"] = authorId;
+                    row["publishing_date"] = pubDate;
+                    row["book_status"] = status;
+                    row["genre"] = genre;
 
-                DataRow row = table.NewRow();
-                row["title"] = title;
-                row["ISBN"] = isbn;
-                row["price"] = price;
-                row["author_ID"] = authorId;
-                row["publishing_date"] = pubDate;
-                row["book_status"] = status;
-                row["genre"] = genre;
+                    table.Rows.Add(row);
+                }
+                else
+                {
+                    throw new Exception("Failed to load Books table");
+                }
 
-                table.Rows.Add(row);
-
-                MySqlCommandBuilder builder = new MySqlCommandBuilder(adapter);
+                    MySqlCommandBuilder builder = new MySqlCommandBuilder(adapter);
                 adapter.Update(ds, "Book");
 
                 Console.WriteLine("Book created successfully.");
