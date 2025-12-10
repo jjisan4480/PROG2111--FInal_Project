@@ -1,4 +1,12 @@
-﻿using System;
+﻿//
+// FILE          : MainProgram.cs
+// PROJECT       : RBLibraryManagement
+// PROGRAMMER    : Josiah Williams, Jobair Ahmed Jisan
+// FIRST VERSION : 2025-12-09
+// DESCRIPTION   : This is the entry point of the application. It initializes the database configuration
+//                 and launches the main database management menu.
+//
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

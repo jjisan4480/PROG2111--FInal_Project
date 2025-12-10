@@ -221,6 +221,14 @@ namespace RBLibraryManagement
             }
         }
 
+        //
+        // METHOD      : GetInfo
+        // DESCRIPTION : A helper method that validates and collects the First Name and Last Name 
+        //               input from the user, ensuring they are not empty or too long.
+        // PARAMETERS  : None
+        // RETURNS     : void
+        //
+
         private void GetInfo()
         {
             bool valid = false;

@@ -1,4 +1,12 @@
-﻿using System;
+﻿//
+// FILE          : DataBaseManagement.cs
+// PROJECT       : RBLibraryManagement
+// PROGRAMMER    : Josiah Williams, Jobair Ahmed Jisan
+// FIRST VERSION : 2025-12-09
+// DESCRIPTION   : This class acts as the main controller for the application. It displays the main menu
+//                 and routes the user to the specific CRUD interfaces for each entity (Member, Book, etc.).
+//
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

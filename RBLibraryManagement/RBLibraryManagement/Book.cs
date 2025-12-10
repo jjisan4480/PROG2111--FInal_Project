@@ -70,6 +70,13 @@ namespace RBLibraryManagement
             return Console.ReadKey(true).KeyChar;
         }
 
+        //
+        // METHOD      : CreateBook
+        // DESCRIPTION : Collects user input for a new book (Title, ISBN, Price, etc.), validates the data,
+        //               and inserts a new record into the 'Book' database table.
+        // PARAMETERS  : None
+        // RETURNS     : void
+        //
         private void CreateBook()
         {
             Console.WriteLine("\n--- Create Book ---");
@@ -178,6 +185,13 @@ namespace RBLibraryManagement
         }
 
 
+        //
+        // METHOD      : ReadBooks
+        // DESCRIPTION : Connects to the database, retrieves all records from the 'Book' table,
+        //               and displays them to the console in a readable format.
+        // PARAMETERS  : None
+        // RETURNS     : void
+        //
         private void ReadBooks()
         {
             Console.WriteLine("\n--- Book List ---");
@@ -216,6 +230,13 @@ namespace RBLibraryManagement
         }
 
 
+        //
+        // METHOD      : UpdateBook
+        // DESCRIPTION : Prompts the user for a Book ID and new details (Price, Status), then updates
+        //               the corresponding record in the database using a parameterized SQL query.
+        // PARAMETERS  : None
+        // RETURNS     : void
+        //
         private void UpdateBook()
         {
             Console.WriteLine("\n--- Update Book ---");
@@ -250,6 +271,14 @@ namespace RBLibraryManagement
                 }
             
         }
+
+        //
+        // METHOD      : DeleteBook
+        // DESCRIPTION : Prompts the user for a Book ID and confirms deletion. If confirmed, it removes
+        //               the record from the database.
+        // PARAMETERS  : None
+        // RETURNS     : void
+        //
         private void DeleteBook()
         {
             Console.WriteLine("\n--- Delete Book ---");
